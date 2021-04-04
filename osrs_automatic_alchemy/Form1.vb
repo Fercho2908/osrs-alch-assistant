@@ -5,7 +5,7 @@ Public Class Form1
     Dim hilo_inicio As New ThreadStart(AddressOf label_animation1)
     Dim num_random As New Random
     Dim ex, ey As Integer
-    Dim Arrastre As Boolean
+    Dim Arrastre, escKey As Boolean
 
     Private Sub Form1_MouseDown(sender As Object, e As MouseEventArgs) Handles MyBase.MouseDown
         ex = e.X
@@ -103,6 +103,7 @@ Public Class Form1
         End Try
     End Sub
 
+    ' I don't know why this doesn't work
     'Private Sub label_animation2()
     '    Try
     '        Form1.CheckForIllegalCrossThreadCalls = False
@@ -150,16 +151,14 @@ Public Class Form1
         solo_numeros(e)
     End Sub
 
-    Private Sub cast_alchemy(replays)
+    Private Sub cast_alchemy()
         Try
             If (Char.IsNumber(TextBox1.Text)) Then
-                replays = TextBox1.Text
-
                 WindowState = FormWindowState.Minimized
 
                 Dim mouse = New Point(num_random.Next(1277, 1284), num_random.Next(527, 536))
 
-                For i As Integer = 1 To replays
+                For i As Integer = 1 To TextBox1.Text
 
                     If (Cursor.Position <> mouse) Then
                         Cursor.Position = New Point(mouse)
@@ -202,7 +201,7 @@ Public Class Form1
 
                     Thread.Sleep(num_random.Next(3000, 4000))
 
-                    If (i = replays) Then
+                    If (i = TextBox1.Text) Then
                         WindowState = FormWindowState.Normal
                         MsgBox("Listo perro😎")
                     End If
@@ -221,15 +220,49 @@ Public Class Form1
                 MsgBox("Debe ingresar el número de items para hacer alchemy")
             End If
         Catch ex As Exception
+            If (escKey) Then
+
+            Else
+                MsgBox(ex.ToString)
+            End If
+        End Try
+    End Sub
+
+    Private Declare Function GetAsyncKeyState Lib "user32" (ByVal vKey As Long) As Integer
+
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles Me.Load
+        AcceptButton = Button1
+
+        Timer1.Enabled = True
+    End Sub
+
+    Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
+        Try
+            escKey = GetAsyncKeyState(Keys.Escape)
+
+            If (escKey And Focused = False) Then
+                hilo.Abort()
+
+                WindowState = FormWindowState.Normal
+                TextBox1.Text = "Repeticiones"
+                TextBox1.ForeColor = Color.DimGray
+                Label1.ForeColor = Color.DimGray
+                Label1.Location = New Point(8, 42)
+                Label1.Font = New Font(Label1.Font.Name, 12)
+                Label1.Visible = False
+                CheckBox1.Checked = False
+                CheckBox1.Focus()
+
+            End If
+        Catch ex As Exception
             MsgBox(ex.ToString)
         End Try
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        cast_alchemy(TextBox1.Text)
-    End Sub
-
-    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles Me.Load
-        AcceptButton = Button1
+        hilo_inicio = New ThreadStart(AddressOf cast_alchemy)
+        hilo = New Thread(hilo_inicio)
+        hilo.IsBackground = True
+        hilo.Start()
     End Sub
 End Class
