@@ -1,0 +1,12 @@
+C:\Users\Fercho\Desktop\osrs_alch_assistant\osrs_automatic_alchemy\bin\Debug\osrs_alch_assistant.exe.config
+C:\Users\Fercho\Desktop\osrs_alch_assistant\osrs_automatic_alchemy\bin\Debug\osrs_alch_assistant.exe
+C:\Users\Fercho\Desktop\osrs_alch_assistant\osrs_automatic_alchemy\bin\Debug\osrs_alch_assistant.pdb
+C:\Users\Fercho\Desktop\osrs_alch_assistant\osrs_automatic_alchemy\bin\Debug\osrs_alch_assistant.xml
+C:\Users\Fercho\Desktop\osrs_alch_assistant\osrs_automatic_alchemy\obj\Debug\osrs_alch_assistant.vbprojAssemblyReference.cache
+C:\Users\Fercho\Desktop\osrs_alch_assistant\osrs_automatic_alchemy\obj\Debug\osrs_alch_assistant.Form1.resources
+C:\Users\Fercho\Desktop\osrs_alch_assistant\osrs_automatic_alchemy\obj\Debug\osrs_alch_assistant.Resources.resources
+C:\Users\Fercho\Desktop\osrs_alch_assistant\osrs_automatic_alchemy\obj\Debug\osrs_alch_assistant.vbproj.GenerateResource.cache
+C:\Users\Fercho\Desktop\osrs_alch_assistant\osrs_automatic_alchemy\obj\Debug\osrs_alch_assistant.vbproj.CoreCompileInputs.cache
+C:\Users\Fercho\Desktop\osrs_alch_assistant\osrs_automatic_alchemy\obj\Debug\osrs_alch_assistant.exe
+C:\Users\Fercho\Desktop\osrs_alch_assistant\osrs_automatic_alchemy\obj\Debug\osrs_alch_assistant.xml
+C:\Users\Fercho\Desktop\osrs_alch_assistant\osrs_automatic_alchemy\obj\Debug\osrs_alch_assistant.pdb
