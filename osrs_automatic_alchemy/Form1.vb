@@ -212,7 +212,6 @@ Public Class Form1
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles Me.Load
         AcceptButton = Button1
-        Timer1.Enabled = True
     End Sub
 
     Private Sub Restaurar_interfaz()
@@ -249,14 +248,20 @@ Public Class Form1
 
             If TextBox1.SelectedText.Equals("Repeticiones") Then
                 CheckBox1.Focus()
-            End If
 
+                If CheckBox1.Focused Then
+                    Timer1.Enabled = False
+                End If
+
+            End If
         Catch ex As Exception
             MsgBox(ex.ToString)
         End Try
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Timer1.Enabled = True
+
         hilo_inicio = New ThreadStart(AddressOf cast_alchemy)
         hilo = New Thread(hilo_inicio)
         hilo.IsBackground = True
