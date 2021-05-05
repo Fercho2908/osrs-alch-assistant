@@ -2,10 +2,10 @@
 
 Public Class Form1
     Dim hilo As Thread
-    Dim hilo_inicio As New ThreadStart(AddressOf label_animation1)
+    Dim hilo_inicio As New ThreadStart(AddressOf cast_alchemy)
     Dim num_random As New Random
     Dim ex, ey As Integer
-    Dim Arrastre, escKey As Boolean
+    Dim Arrastre, escKey, tarea_completada As Boolean
 
     Private Sub Form1_MouseDown(sender As Object, e As MouseEventArgs) Handles MyBase.MouseDown
         ex = e.X
@@ -34,9 +34,9 @@ Public Class Form1
     Private Sub TextBox1_Enter(sender As Object, e As EventArgs) Handles TextBox1.Enter
         Panel5.BackColor = Color.LightSkyBlue
 
-        Dim ubicaion = New Point(8, 42)
+        Dim ubicacion = New Point(8, 42)
 
-        If (Label1.Location = ubicaion And TextBox1.ForeColor = Color.DimGray) Then
+        If (Label1.Location = ubicacion) Then
             Try
                 Label1.Visible = True
 
@@ -54,24 +54,15 @@ Public Class Form1
     Private Sub TextBox1_Leave(sender As Object, e As EventArgs) Handles TextBox1.Leave
         Panel5.BackColor = Color.SteelBlue
 
-        Dim ubicaion = New Point(8, 22)
+        Dim ubicacion = New Point(8, 22)
 
-        If (Label1.Location = ubicaion And TextBox1.Text.Equals("")) Then
+        If (Label1.Location = ubicacion And TextBox1.Text.Equals("")) Then
             Try
 
-                'hilo_inicio = New ThreadStart(AddressOf label_animation2)
-                'hilo = New Thread(hilo_inicio)
-                'hilo.IsBackground = True
-                'hilo.Start()
-
-                Label1.ForeColor = Color.DimGray
-                Label1.Location = New Point(8, 42)
-                Label1.Font = New Font(Label1.Font.Name, 12)
-                Label1.Visible = False
-                TextBox1.ForeColor = Color.DimGray
-                TextBox1.Text = "Repeticiones"
-                TextBox1.Enabled = False
-                TextBox1.Enabled = True
+                hilo_inicio = New ThreadStart(AddressOf label_animation2)
+                hilo = New Thread(hilo_inicio)
+                hilo.IsBackground = True
+                hilo.Start()
 
             Catch ex As Exception
                 MsgBox(ex.ToString)
@@ -81,9 +72,10 @@ Public Class Form1
 
     Private Sub label_animation1()
         Try
-            Form1.CheckForIllegalCrossThreadCalls = False
+            CheckForIllegalCrossThreadCalls = False
 
             Label1.ForeColor = Color.White
+            Label1.Visible = True
             TextBox1.ForeColor = Color.White
             TextBox1.Text = ""
 
@@ -103,33 +95,30 @@ Public Class Form1
         End Try
     End Sub
 
-    ' I don't know why this doesn't work
-    'Private Sub label_animation2()
-    '    Try
-    '        Form1.CheckForIllegalCrossThreadCalls = False
+    Private Sub label_animation2()
+        Try
+            CheckForIllegalCrossThreadCalls = False
 
-    '        For i As Integer = 0 To 3
+            For i As Integer = 0 To 3
 
-    '            If (Label1.Location.Y = 32 Or Label1.Location.Y = 22) Then
-    '                Label1.Font = New Font(Label1.Font.Name, Label1.Font.SizeInPoints + 1)
-    '            End If
+                Label1.Location = New Point(Label1.Location.X, Label1.Location.Y + 5)
 
-    '            Label1.Location = New Point(Label1.Location.X, Label1.Location.Y + 5)
+                If (Label1.Location.Y = 32 Or Label1.Location.Y = 42) Then
+                    Label1.Font = New Font(Label1.Font.Name, Label1.Font.SizeInPoints + 1)
+                End If
 
-    '            Thread.Sleep(25)
-    '        Next
+                Thread.Sleep(25)
+            Next
 
-    '        Label1.ForeColor = Color.DimGray
-    '        Label1.Location = New Point(8, 42)
-    '        Label1.Font = New Font(Label1.Font.Name, 12)
-    '        Label1.Visible = False
-    '        TextBox1.ForeColor = Color.DimGray
-    '        TextBox1.Text = "Repeticiones"
+            Label1.ForeColor = Color.DimGray
+            Label1.Visible = False
+            TextBox1.ForeColor = Color.DimGray
+            TextBox1.Text = "Repeticiones"
 
-    '    Catch ex As Exception
-    '        MsgBox(ex.ToString)
-    '    End Try
-    'End Sub
+        Catch ex As Exception
+            MsgBox(ex.ToString)
+        End Try
+    End Sub
 
     Public Declare Sub mouse_event Lib "user32" Alias "mouse_event" (ByVal dwFlags As Long)
     'LEFT BUTTON DOWN = &H2
@@ -154,7 +143,9 @@ Public Class Form1
     Private Sub cast_alchemy()
         Try
             If (Char.IsNumber(TextBox1.Text)) Then
+                CheckForIllegalCrossThreadCalls = False
                 WindowState = FormWindowState.Minimized
+                tarea_completada = False
 
                 Dim mouse = New Point(num_random.Next(1277, 1284), num_random.Next(527, 536))
 
@@ -199,28 +190,17 @@ Public Class Form1
 
                     End If
 
-                    Thread.Sleep(num_random.Next(3000, 4000))
-
                     If (i = TextBox1.Text) Then
-                        WindowState = FormWindowState.Normal
-                        MsgBox("Listo perro😎")
+                        tarea_completada = True
                     End If
-                Next
 
-                TextBox1.Text = "Repeticiones"
-                TextBox1.ForeColor = Color.DimGray
-                Label1.ForeColor = Color.DimGray
-                Label1.Location = New Point(8, 42)
-                Label1.Font = New Font(Label1.Font.Name, 12)
-                Label1.Visible = False
-                CheckBox1.Checked = False
-                CheckBox1.Focus()
-                WindowState = FormWindowState.Minimized
+                    Thread.Sleep(num_random.Next(3000, 4000))
+                Next
             Else
                 MsgBox("Debe ingresar el número de items para hacer alchemy")
             End If
         Catch ex As Exception
-            If (escKey) Then
+            If (ex.ToString.Contains("Subproceso anulado")) Then
 
             Else
                 MsgBox(ex.ToString)
@@ -232,28 +212,45 @@ Public Class Form1
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles Me.Load
         AcceptButton = Button1
-
         Timer1.Enabled = True
+    End Sub
+
+    Private Sub Restaurar_interfaz()
+        Label1.Visible = False
+        Label1.Location = New Point(8, 42)
+        Label1.Font = New Font(Label1.Font.Name, 12)
+        TextBox1.ForeColor = Color.DimGray
+        TextBox1.Text = "Repeticiones"
+        Panel5.BackColor = Color.SteelBlue
+        CheckBox1.Checked = False
     End Sub
 
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
         Try
             escKey = GetAsyncKeyState(Keys.Escape)
 
-            If (escKey And Focused = False) Then
+            If (escKey And Not Focused) Then
+                Restaurar_interfaz()
+
                 hilo.Abort()
 
                 WindowState = FormWindowState.Normal
-                TextBox1.Text = "Repeticiones"
-                TextBox1.ForeColor = Color.DimGray
-                Label1.ForeColor = Color.DimGray
-                Label1.Location = New Point(8, 42)
-                Label1.Font = New Font(Label1.Font.Name, 12)
-                Label1.Visible = False
-                CheckBox1.Checked = False
-                CheckBox1.Focus()
-
             End If
+
+            If (tarea_completada) Then
+                tarea_completada = False
+
+                Restaurar_interfaz()
+
+                WindowState = FormWindowState.Normal
+                MsgBox("Listo perro😎")
+                WindowState = FormWindowState.Minimized
+            End If
+
+            If TextBox1.SelectedText.Equals("Repeticiones") Then
+                CheckBox1.Focus()
+            End If
+
         Catch ex As Exception
             MsgBox(ex.ToString)
         End Try
